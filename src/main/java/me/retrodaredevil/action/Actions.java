@@ -10,28 +10,43 @@ public final class Actions {
 	// region run forever
 	/** @return A RunForeverAction where {@link Action#update()} cannot be called after {@link Action#end()} is called. (Non-recyclable)*/
 	public static Action createRunForever(Runnable runnable){
-		return new RunForeverAction(runnable, false);
+		return new RunForeverAction(false, runnable);
 	}
 	/** @return A RunForeverAction where after called {@link Action#end()} you can call {@link Action#update()} and it will continue (recyclable)*/
 	public static Action createRunForeverRecyclable(Runnable runnable){
-		return new RunForeverAction(runnable, true);
+		return new RunForeverAction(true, runnable);
 	}
 	// endregion
 
 	// region run once
+	/** @return A RunOnceAction that can only be started once. If it is started twice, an {@link IllegalStateException} will be thrown*/
+	public static Action createRunOnce(Runnable runnable){
+		return new RunOnceAction(runnable, RunOnceAction.RunType.NON_RECYCLABLE);
+	}
 	/** @return A RunOnceAction that will run the {@link Runnable} every time the action starts*/
 	public static Action createRunOnceRecyclable(Runnable runnable){
 		return new RunOnceAction(runnable, RunOnceAction.RunType.RUN_EVERY_START);
-	}
-	/** @return A RunOnceAction that can only be started once. If it is started twice, an {@link IllegalStateException} will be thrown*/
-	public static Action createRunOnceNonRecyclable(Runnable runnable){
-		return new RunOnceAction(runnable, RunOnceAction.RunType.NON_RECYCLABLE);
 	}
 	/** @return A RunOnceAction that will only run the {@link Runnable} once even if it is started and ended multiple times.*/
 	public static Action createRunOnceRecyclableRunOnce(Runnable runnable){
 		return new RunOnceAction(runnable, RunOnceAction.RunType.RUN_ONCE);
 	}
 	// endregion
+
+	public static Action createWaitToStartAction(boolean recyclable, Action action, CanStart canStart){
+		return new StartAction(recyclable, action) {
+			@Override
+			protected boolean shouldStart() {
+                return canStart.canStart();
+			}
+		};
+	}
+	public static Action createWaitToStartAction(Action action, CanStart canStart){
+		return createWaitToStartAction(false, action, canStart);
+	}
+	public static Action createWaitToStartActionRecyclable(Action action, CanStart canStart){
+		return createWaitToStartAction(true, action, canStart);
+	}
 
 	static abstract class Builder<T extends Builder> {
 		protected boolean canBeDone = true, canRecycle = false;
@@ -77,7 +92,7 @@ public final class Actions {
 			return getThis();
 		}
 		public ActionMultiplexer build(){
-			return new SetActionMultiplexer(new HashSet<>(Arrays.asList(initialActions)), canBeDone, clearAllOnEnd, canRecycle);
+			return new SetActionMultiplexer(canRecycle, new HashSet<>(Arrays.asList(initialActions)), canBeDone, clearAllOnEnd);
 		}
 	}
 
@@ -108,7 +123,10 @@ public final class Actions {
 			return getThis();
 		}
 		public ActionQueue build(){
-            return new DequeActionQueue(new ArrayDeque<>(Arrays.asList(initialActions)), canBeDone, clearActiveOnEnd, clearQueuedOnEnd, canRecycle);
+            return new DequeActionQueue(canRecycle, new ArrayDeque<>(Arrays.asList(initialActions)), canBeDone, clearActiveOnEnd, clearQueuedOnEnd);
 		}
+	}
+	public interface CanStart {
+		boolean canStart();
 	}
 }

@@ -19,9 +19,9 @@ final class DequeActionQueueTest {
 	void testNeverEndingQueue(){
 		final ActionQueue queue = new Actions.ActionQueueBuilder().canBeDone(false).build();
         final List<Integer> list = new ArrayList<>();
-        queue.add(Actions.createRunOnceNonRecyclable(() -> list.add(0)));
-		queue.add(Actions.createRunOnceNonRecyclable(() -> list.add(1)));
-		queue.add(Actions.createRunOnceNonRecyclable(() -> list.add(2)));
+        queue.add(Actions.createRunOnce(() -> list.add(0)));
+		queue.add(Actions.createRunOnce(() -> list.add(1)));
+		queue.add(Actions.createRunOnce(() -> list.add(2)));
 
 		assertEquals(0, list.size());
 		assertFalse(queue.isActive());
@@ -52,9 +52,9 @@ final class DequeActionQueueTest {
 	void testEndingQueue(){
 		final ActionQueue queue = new Actions.ActionQueueBuilder().canBeDone(true).build();
         final List<Integer> list = new ArrayList<>();
-        queue.add(Actions.createRunOnceNonRecyclable(() -> list.add(0)));
-		queue.add(Actions.createRunOnceNonRecyclable(() -> list.add(1)));
-		queue.add(Actions.createRunOnceNonRecyclable(() -> list.add(2)));
+        queue.add(Actions.createRunOnce(() -> list.add(0)));
+		queue.add(Actions.createRunOnce(() -> list.add(1)));
+		queue.add(Actions.createRunOnce(() -> list.add(2)));
 
 		assertEquals(0, list.size());
 		assertFalse(queue.isActive());

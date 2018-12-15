@@ -20,12 +20,12 @@ public class SetActionMultiplexer extends SimpleAction implements ActionMultiple
 
 	/**
 	 *
+	 * @param canRecycle true if {@link #update()} can be called after {@link #end()} is called
 	 * @param actionSet The Set that this instance will use to store actions. Do not modify this set after it has been passed to this constructor.
 	 * @param canBeDone true if {@link #isDone()} should return true when there are no actions active
 	 * @param clearOnEnd true if all actions stored in this instance should be cleared and ended if they are running when {@link #end()} is called.
-	 * @param canRecycle true if {@link #update()} can be called after {@link #end()} is called
 	 */
-	public SetActionMultiplexer(Set<Action> actionSet, boolean canBeDone, boolean clearOnEnd, boolean canRecycle){
+	public SetActionMultiplexer(boolean canRecycle, Set<Action> actionSet, boolean canBeDone, boolean clearOnEnd){
 		super(canRecycle); // set canRecycle to false because this will never be done
         this.actionSet = actionSet;
 		this.unmodifiableActionSet = Collections.unmodifiableSet(this.actionSet);

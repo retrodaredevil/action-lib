@@ -2,9 +2,6 @@ package me.retrodaredevil.action.test;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import me.retrodaredevil.action.Action;
 import me.retrodaredevil.action.Actions;
 
@@ -17,7 +14,7 @@ final class RunOnceActionTest {
 	@Test
 	void testRunOnceNonRecyclable(){
         final int[] value = {0};
-		final Action runOnce = Actions.createRunOnceNonRecyclable(() -> value[0]++);
+		final Action runOnce = Actions.createRunOnce(() -> value[0]++);
 
 		assertEquals(0, value[0]);
 		assertFalse(runOnce.isActive());

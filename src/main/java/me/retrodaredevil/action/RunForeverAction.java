@@ -8,7 +8,7 @@ class RunForeverAction implements Action {
 	private boolean running = false;
 	private boolean endedOnce = false;
 
-	RunForeverAction(Runnable runnable, boolean canRecycle){
+	RunForeverAction(boolean canRecycle, Runnable runnable){
 		this.runnable = Objects.requireNonNull(runnable);
 		this.canRecycle = canRecycle;
 	}

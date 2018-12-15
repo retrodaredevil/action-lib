@@ -20,13 +20,13 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 
 	/**
 	 *
+	 * @param canRecycle Can this be recycled
 	 * @param actionQueue A Deque of all the initial actions to be queued up. Once passed to the constructor, do not modify.
 	 * @param canBeDone will {@link #isDone()} return true when there are no actions left
 	 * @param clearActiveOnEnd If this is forcefully ended, should the active action be removed
 	 * @param clearQueuedOnEnd If this is forcefully ended, should everything that's queued be cleared
-	 * @param canRecycle Can this be recycled
 	 */
-	public DequeActionQueue(Deque<Action> actionQueue, boolean canBeDone, boolean clearActiveOnEnd, boolean clearQueuedOnEnd, boolean canRecycle){
+	public DequeActionQueue(boolean canRecycle, Deque<Action> actionQueue, boolean canBeDone, boolean clearActiveOnEnd, boolean clearQueuedOnEnd){
 		super(canRecycle);
 		this.actionQueue = actionQueue;
 		this.canBeDone = canBeDone;

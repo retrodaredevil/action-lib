@@ -12,6 +12,7 @@ public interface Action {
 	 * Updates the action
 	 * <p>
 	 * Assuming {@link #end()} hasn't been called, after this is called {@link #isActive()} will be true
+	 * @throws IllegalStateException If this is not "recyclable" and {@link #end()} has already been called. This is optional to be thrown.
 	 */
 	void update();
 

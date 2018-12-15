@@ -1,17 +1,26 @@
 package me.retrodaredevil.action;
 
+/**
+ * A class that handles a simple implementation for an {@link Action}
+ * <p>
+ * NOTE: That for {@link #onStart()}, {@link #onUpdate()}, and {@link #onEnd(boolean)}, you should call super even though
+ * they probably won't do anything. This is to maintain consistency so if you change your base class, those methods will be called.
+ */
 public class SimpleAction implements Action {
 
 	private final boolean canRecycle;
 
+	/** true when {@link #isActive()} is true, false when {@link #isActive()} is false*/
 	private boolean running = false;
+	/** Set to false when starting (before {@link #onStart()} is called*/
 	private boolean done = false;
 	/** Set to true when {@link #end()} is called. Should never be set back to false once true*/
 	private boolean oneWayEndedFlag = false;
 
-	protected SimpleAction(){
-		this(true);
-	}
+	/**
+	 *
+	 * @param canRecycle Can {@link #update()} be called after being ended once via {@link #end()}
+	 */
 	protected SimpleAction(boolean canRecycle){
 		this.canRecycle = canRecycle;
 	}

@@ -19,9 +19,9 @@ final class SetActionMultiplexerTest {
 	void testNeverEnding(){
 		final ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().canBeDone(false).build();
 		final Collection<Integer> list = new ArrayList<>();
-		multiplexer.add(Actions.createRunOnceNonRecyclable(() -> list.add(0)));
-		multiplexer.add(Actions.createRunOnceNonRecyclable(() -> list.add(1)));
-		multiplexer.add(Actions.createRunOnceNonRecyclable(() -> list.add(2)));
+		multiplexer.add(Actions.createRunOnce(() -> list.add(0)));
+		multiplexer.add(Actions.createRunOnce(() -> list.add(1)));
+		multiplexer.add(Actions.createRunOnce(() -> list.add(2)));
 
 		assertTrue(list.isEmpty());
 		assertFalse(multiplexer.isActive());
@@ -40,9 +40,9 @@ final class SetActionMultiplexerTest {
 	void testEnding(){
 		final ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder().canBeDone(true).build();
 		final Collection<Integer> list = new ArrayList<>();
-		multiplexer.add(Actions.createRunOnceNonRecyclable(() -> list.add(0)));
-		multiplexer.add(Actions.createRunOnceNonRecyclable(() -> list.add(1)));
-		multiplexer.add(Actions.createRunOnceNonRecyclable(() -> list.add(2)));
+		multiplexer.add(Actions.createRunOnce(() -> list.add(0)));
+		multiplexer.add(Actions.createRunOnce(() -> list.add(1)));
+		multiplexer.add(Actions.createRunOnce(() -> list.add(2)));
 
 		assertTrue(list.isEmpty());
 		assertFalse(multiplexer.isActive());
