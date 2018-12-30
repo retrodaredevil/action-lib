@@ -2,9 +2,10 @@ package me.retrodaredevil.action;
 
 /**
  * Represents an Action that can add other actions to it. The behaviour of this interface is not
- * strictly defined.
+ * strictly defined. It is also expected that the actions added via {@link #add(Action)} will eventually be represented
+ * in the elements returned from {@link #getActiveActions()} but depending on how the implementation works, is not required.
  */
-public interface ActionHolder extends Action {
+public interface ActionCollection extends ActiveActionHolder {
 	/**
 	 * @param action The action to add
 	 * @return true if the action was added successfully

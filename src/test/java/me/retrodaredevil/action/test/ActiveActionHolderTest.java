@@ -1,6 +1,7 @@
 package me.retrodaredevil.action.test;
 
 import me.retrodaredevil.action.Action;
+import me.retrodaredevil.action.ActionCollection;
 import me.retrodaredevil.action.Actions;
 import me.retrodaredevil.action.ActiveActionHolder;
 
@@ -11,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 final class ActiveActionHolderTest {
 	private ActiveActionHolderTest() { throw new UnsupportedOperationException(); }
 
-	static void testClearOnEnd(ActiveActionHolder holder){
+	static void testClearOnEnd(ActionCollection holder){
 		final int[] value = {0};
 		final Action action = Actions.createRunForeverRecyclable(() -> value[0]++);
 		holder.add(action);
@@ -32,7 +33,7 @@ final class ActiveActionHolderTest {
 		assertEquals(1, value[0]);
 		assertFalse(holder.getActiveActions().contains(action));
 	}
-	static void testNotClearOnEnd(ActiveActionHolder holder){
+	static void testNotClearOnEnd(ActionCollection holder){
 		final int[] value = {0};
 		final Action action = Actions.createRunForeverRecyclable(() -> value[0]++);
 		holder.add(action);

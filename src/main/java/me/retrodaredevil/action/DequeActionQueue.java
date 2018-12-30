@@ -19,7 +19,7 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 	private Action currentAction = null;
 
 	/**
-	 *
+	 * NOTE: It is recommended to use {@link Actions.ActionQueueBuilder} instead of creating this directly
 	 * @param canRecycle Can this be recycled
 	 * @param actionQueue A Deque of all the initial actions to be queued up. Once passed to the constructor, do not modify.
 	 * @param canBeDone will {@link #isDone()} return true when there are no actions left

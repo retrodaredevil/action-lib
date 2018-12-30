@@ -7,8 +7,8 @@ public abstract class StartAction extends SimpleAction {
 	private boolean started = false;
 
 	/**
-	 * NOTE: It is recommended to use {@link Actions#createWaitToStartAction(boolean, Action, Actions.CanStart)} instead
-	 * of initializing this directly.
+	 * NOTE: It is recommended to use {@link Actions#createWaitToStartAction(Action, Actions.CanStart)}
+	 * or {@link Actions#createWaitToStartActionRecyclable(Action, Actions.CanStart)} instead of initializing this directly.
 	 *
 	 * @param canRecycle
 	 * @param action

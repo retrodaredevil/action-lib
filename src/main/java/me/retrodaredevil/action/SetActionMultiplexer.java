@@ -19,7 +19,7 @@ public class SetActionMultiplexer extends SimpleAction implements ActionMultiple
 	private final boolean clearOnEnd;
 
 	/**
-	 *
+	 * NOTE: It is recommended to use {@link Actions.ActionMultiplexerBuilder} instead of directly creating this
 	 * @param canRecycle true if {@link #update()} can be called after {@link #end()} is called
 	 * @param actionSet The Set that this instance will use to store actions. Do not modify this set after it has been passed to this constructor.
 	 * @param canBeDone true if {@link #isDone()} should return true when there are no actions active

@@ -1,13 +1,13 @@
 package me.retrodaredevil.action;
 
 /**
- * Represents an {@link ActionHolder} that has an active {@link Action} with multiple actions in a
+ * Represents an {@link ActionCollection} that has an active {@link Action} with multiple actions in a
  * queue waiting to be active.
  * <p>
  * The behaviour of this class is not strictly defined except that there is an active {@link Action}
  * and there may be multiple actions waiting to be the active {@link Action}
  */
-public interface ActionQueue extends SingleActiveActionHolder {
+public interface ActionQueue extends SingleActiveActionHolder, ActionCollection {
 	/**
 	 * Adds the action to the beginning of the queue to
 	 * @param action The action to add

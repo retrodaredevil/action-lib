@@ -30,10 +30,9 @@ final class StartActionTest {
 	}
 	@Test
 	void testRecycling(){
-		ActionTest.testNonRecyclable(Actions.createWaitToStartAction(false, Actions.createRunOnce(() -> {}), () -> false));
-		ActionTest.testRecyclable(Actions.createWaitToStartAction(true, Actions.createRunOnce(() -> {}), () -> false));
-
-		ActionTest.testNonRecyclable(Actions.createWaitToStartAction(Actions.createRunOnce(() -> {}), () -> false));
-		ActionTest.testRecyclable(Actions.createWaitToStartActionRecyclable(Actions.createRunOnce(() -> {}), () -> false));
+		final Runnable doNothing = () -> {};
+		final Actions.CanStart canStart = () -> false;
+		ActionTest.testNonRecyclable(Actions.createWaitToStartAction(Actions.createRunOnce(doNothing), canStart));
+		ActionTest.testRecyclable(Actions.createWaitToStartActionRecyclable(Actions.createRunOnce(doNothing), canStart));
 	}
 }

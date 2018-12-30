@@ -7,8 +7,9 @@ import java.util.Collection;
  */
 public interface SingleActiveActionHolder extends ActiveActionHolder {
 	/**
-	 *
-	 * @return The active action or null. If not null, {@link Action#isActive()} will be true
+	 * Note it is not guaranteed that {@link Action#isActive()} == true however, if you call {@link #update()}, then it
+	 * should be true
+     * @return The active action or null if there is none.
 	 */
 	Action getActiveAction();
 

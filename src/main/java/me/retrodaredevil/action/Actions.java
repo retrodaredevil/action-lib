@@ -19,21 +19,36 @@ public final class Actions {
 	// endregion
 
 	// region run once
-	/** @return A RunOnceAction that can only be started once. If it is started twice, an {@link IllegalStateException} will be thrown*/
+	/**
+	 * Once updated, {@link Action#isDone()} will return true
+	 * <p>
+	 * If it is started twice, an {@link IllegalStateException} will be thrown. Because of this, the runnable will only
+	 * ever be run once
+	 * @return A RunOnceAction that can only be started once.
+	 */
 	public static Action createRunOnce(Runnable runnable){
 		return new RunOnceAction(runnable, RunOnceAction.RunType.NON_RECYCLABLE);
 	}
-	/** @return A RunOnceAction that will run the {@link Runnable} every time the action starts*/
+	/**
+	 * Once updated, {@link Action#isDone()} will return true however, even though it is done, you are still allowed to
+	 * end it then update it again. If you start it again by first ending it then updating it, the runnable will be run again.
+	 * @return A RunOnceAction that will run the {@link Runnable} every time the action starts
+	 */
 	public static Action createRunOnceRecyclable(Runnable runnable){
 		return new RunOnceAction(runnable, RunOnceAction.RunType.RUN_EVERY_START);
 	}
-	/** @return A RunOnceAction that will only run the {@link Runnable} once even if it is started and ended multiple times.*/
+	/**
+	 * Once updated, {@link Action#isDone()} will return true
+	 * <p>
+	 * When first updated, the runnable will be run. After it is run once, it will never run again.
+	 * @return A RunOnceAction that will only run the {@link Runnable} once even if it is started and ended multiple times.
+	 */
 	public static Action createRunOnceRecyclableRunOnce(Runnable runnable){
 		return new RunOnceAction(runnable, RunOnceAction.RunType.RUN_ONCE);
 	}
 	// endregion
 
-	public static Action createWaitToStartAction(boolean recyclable, Action action, CanStart canStart){
+	private static Action createWaitToStartAction(boolean recyclable, Action action, CanStart canStart){
 		return new StartAction(recyclable, action) {
 			@Override
 			protected boolean shouldStart() {
@@ -47,6 +62,14 @@ public final class Actions {
 	public static Action createWaitToStartActionRecyclable(Action action, CanStart canStart){
 		return createWaitToStartAction(true, action, canStart);
 	}
+
+	public static ActionChooser createActionChooser(WhenDone whenDone){
+		return new DefaultActionChooser(false, whenDone);
+	}
+	public static ActionChooser createActionChooserRecyclable(WhenDone whenDone){
+		return new DefaultActionChooser(true, whenDone);
+	}
+
 
 	static abstract class Builder<T extends Builder> {
 		protected boolean canBeDone = true, canRecycle = false;
