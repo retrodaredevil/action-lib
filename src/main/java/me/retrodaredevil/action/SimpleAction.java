@@ -5,6 +5,8 @@ package me.retrodaredevil.action;
  * <p>
  * NOTE: That for {@link #onStart()}, {@link #onUpdate()}, and {@link #onEnd(boolean)}, you should call super even though
  * they probably won't do anything. This is to maintain consistency so if you change your base class, those methods will be called.
+ * <p>
+ * NOTE: When implementing, {@link #getCurrentIsDone()} is reset back to false whenever the action is started (before {@link #onStart()} is called)
  */
 public class SimpleAction implements Action {
 
@@ -44,6 +46,8 @@ public class SimpleAction implements Action {
 		this.done = done;
 	}
 	/** NOTE: Will not call {@link #onIsDoneRequest()}
+	 * <p>
+	 * NOTE: The value of this resets every time this action is started
 	 * @return the current value set from {@link #setDone(boolean)}.*/
 	protected final boolean getCurrentIsDone(){
 		return done;

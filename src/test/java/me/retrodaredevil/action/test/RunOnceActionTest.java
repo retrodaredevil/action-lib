@@ -34,4 +34,51 @@ final class RunOnceActionTest {
 
 		assertThrows(IllegalStateException.class, runOnce::update);
 	}
+	@Test
+	void testRunOnceEveryStart(){
+		final int[] value = {0};
+		final Action action = Actions.createRunOnceRecyclable(() -> value[0]++);
+
+		testRecyclable(action, value);
+
+		action.update();
+		assertTrue(action.isActive());
+		assertTrue(action.isDone());
+		assertEquals(2, value[0]);
+	}
+
+	@Test
+	void testRunOnceOnlyOnce(){
+		final int[] value = {0};
+		final Action action = Actions.createRunOnceRecyclableRunOnce(() -> value[0]++);
+
+		testRecyclable(action, value);
+		assertEquals(1, value[0]);
+		assertFalse(action.isActive());
+
+		action.update();
+		assertTrue(action.isActive());
+		assertTrue(action.isDone());
+		assertEquals(1, value[0]); // make sure value stayed at 1
+	}
+	private void testRecyclable(Action action, int[] value){
+		assertEquals(0, value[0]);
+		assertFalse(action.isActive());
+
+		// make sure value increased
+		action.update();
+		assertTrue(action.isActive());
+		assertTrue(action.isDone());
+		assertEquals(1, value[0]);
+
+		// make sure value did not increase
+		action.update();
+		assertTrue(action.isActive());
+		assertTrue(action.isDone());
+		assertEquals(1, value[0]);
+
+		action.end();
+		assertFalse(action.isActive());
+		assertEquals(1, value[0]);
+	}
 }

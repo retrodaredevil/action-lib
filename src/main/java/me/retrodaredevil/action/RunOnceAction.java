@@ -4,6 +4,7 @@ class RunOnceAction extends SimpleAction {
 
 	private final Runnable runnable;
 	private final RunType type;
+	private boolean ranOnce = false;
 
 
 	RunOnceAction(Runnable runnable, RunType type){
@@ -15,11 +16,12 @@ class RunOnceAction extends SimpleAction {
 	@Override
 	protected void onStart() {
 		super.onStart();
-		if(type == RunType.RUN_ONCE && getCurrentIsDone()){
+		setDone(true);
+		if(type == RunType.RUN_ONCE && ranOnce){
 			return;
 		}
 		runnable.run();
-		setDone(true);
+		ranOnce = true;
 	}
 	protected enum RunType {
 		/** Despite the name, this is just used so if this isn't removed, it will still call it multiple times but still wants to "be done" after it starts*/
