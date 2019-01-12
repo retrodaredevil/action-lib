@@ -14,6 +14,7 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 	private final boolean canBeDone;
 	private final boolean clearActiveOnEnd;
 	private final boolean clearQueuedOnEnd;
+	private final boolean immediatelyDoNextWhenDone;
 	private final Deque<Action> actionQueue;
 	/** The current action where if this isn't null, {@link Action#isActive()} should always be true*/
 	private Action currentAction = null;
@@ -25,13 +26,16 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 	 * @param canBeDone will {@link #isDone()} return true when there are no actions left
 	 * @param clearActiveOnEnd If this is forcefully ended, should the active action be removed
 	 * @param clearQueuedOnEnd If this is forcefully ended, should everything that's queued be cleared
+	 * @param immediatelyDoNextWhenDone
 	 */
-	public DequeActionQueue(boolean canRecycle, Deque<Action> actionQueue, boolean canBeDone, boolean clearActiveOnEnd, boolean clearQueuedOnEnd){
+	public DequeActionQueue(boolean canRecycle, Deque<Action> actionQueue, boolean canBeDone,
+							boolean clearActiveOnEnd, boolean clearQueuedOnEnd, boolean immediatelyDoNextWhenDone){
 		super(canRecycle);
 		this.actionQueue = actionQueue;
 		this.canBeDone = canBeDone;
         this.clearActiveOnEnd = clearActiveOnEnd;
         this.clearQueuedOnEnd = clearQueuedOnEnd;
+		this.immediatelyDoNextWhenDone = immediatelyDoNextWhenDone;
 	}
 
 	@Override
@@ -73,7 +77,7 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 	 * @return true if the action was successfully added
 	 */
 	@Override
-	public boolean addNext(Action action){
+	public boolean addBeginning(Action action){
 		Objects.requireNonNull(action);
 		if(action.isActive()){
 			throw new IllegalArgumentException("action cannot be active when you add it!");
@@ -119,13 +123,19 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 	@Override
 	protected void onUpdate() {
 		super.onUpdate();
+		updateAction();
+	}
+	private void updateAction(){
 		if(currentAction == null){
 			currentAction = actionQueue.poll();
 		}
 		if(currentAction != null){
 			currentAction.update();
 			if(currentAction.isDone()){
-                removeCurrentAction();
+				removeCurrentAction();
+				if(immediatelyDoNextWhenDone){ // do function recursively until one thing is not done
+					updateAction();
+				}
 			} else if(!currentAction.isActive()){
 				throw new IllegalStateException("The current action should be active because it was just updated! currentAction: " + currentAction);
 			}

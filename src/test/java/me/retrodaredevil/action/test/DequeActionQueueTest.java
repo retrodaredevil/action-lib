@@ -1,5 +1,6 @@
 package me.retrodaredevil.action.test;
 
+import me.retrodaredevil.action.Action;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -81,6 +82,24 @@ final class DequeActionQueueTest {
 		assertEquals(1, list.get(1).intValue());
 		assertEquals(2, list.get(2).intValue());
 	}
+
+	@Test
+	void testImmediate(){
+		final ActionQueue queue = new Actions.ActionQueueBuilder().immediatelyDoNextWhenDone(true).build();
+		final int[] value = {0};
+		queue.add(Actions.createRunOnce(() -> value[0]++));
+		queue.add(Actions.createRunOnce(() -> value[0]++));
+
+		assertEquals(0, value[0]);
+		queue.update();
+		assertEquals(2, value[0]);
+		assertTrue(queue.isActive());
+		assertTrue(queue.isDone());
+
+		queue.end();
+		assertFalse(queue.isActive());
+	}
+
 	@Test
 	void testRecycling(){
 		ActionTest.testNonRecyclable(new Actions.ActionQueueBuilder().canRecycle(false).build());

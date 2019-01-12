@@ -48,6 +48,7 @@ public final class Actions {
 	}
 	// endregion
 
+	// region wait to start
 	private static Action createWaitToStartAction(boolean recyclable, Action action, CanStart canStart){
 		return new StartAction(recyclable, action) {
 			@Override
@@ -62,6 +63,7 @@ public final class Actions {
 	public static Action createWaitToStartActionRecyclable(Action action, CanStart canStart){
 		return createWaitToStartAction(true, action, canStart);
 	}
+	// endregion
 
 	public static ActionChooser createActionChooser(WhenDone whenDone){
 		return new DefaultActionChooser(false, whenDone);
@@ -121,7 +123,7 @@ public final class Actions {
 
 	public static class ActionQueueBuilder extends Builder<ActionQueueBuilder>{
 		private final Action[] initialActions;
-		private boolean clearActiveOnEnd = true, clearQueuedOnEnd = false;
+		private boolean clearActiveOnEnd = true, clearQueuedOnEnd = false, immediatelyDoNextWhenDone = false;
 
 		public ActionQueueBuilder(Action... initialActions){
 			this.initialActions = initialActions;
@@ -139,6 +141,10 @@ public final class Actions {
 			this.clearQueuedOnEnd = b;
 			return getThis();
 		}
+		public ActionQueueBuilder immediatelyDoNextWhenDone(boolean b){
+			this.immediatelyDoNextWhenDone = b;
+			return getThis();
+		}
 
 		public ActionQueueBuilder clearAllOnEnd(boolean b){
             this.clearQueuedOnEnd = b;
@@ -146,7 +152,10 @@ public final class Actions {
 			return getThis();
 		}
 		public ActionQueue build(){
-            return new DequeActionQueue(canRecycle, new ArrayDeque<>(Arrays.asList(initialActions)), canBeDone, clearActiveOnEnd, clearQueuedOnEnd);
+            return new DequeActionQueue(
+            		canRecycle, new ArrayDeque<>(Arrays.asList(initialActions)), canBeDone,
+					clearActiveOnEnd, clearQueuedOnEnd, immediatelyDoNextWhenDone
+			);
 		}
 	}
 	public interface CanStart {
