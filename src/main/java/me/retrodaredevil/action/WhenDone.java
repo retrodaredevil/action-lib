@@ -4,7 +4,7 @@ package me.retrodaredevil.action;
  * Can be used with the factory methods {@link Actions#createActionChooser(WhenDone)} and {@link Actions#createActionChooserRecyclable(WhenDone)}
  */
 public enum WhenDone {
-	/** When the active action is done, this will keep going like nothing happened*/
+	/** When the active action is done, this will keep going like nothing happened. NOT RECOMMENDED*/
 	DO_NOTHING(false, false),
 
 	/** When the active action is done, it will be ended and cleared*/

@@ -71,6 +71,28 @@ public final class Actions {
 	public static ActionChooser createActionChooserRecyclable(WhenDone whenDone){
 		return new DefaultActionChooser(true, whenDone);
 	}
+	
+	// region Linked Actions
+	
+	/**
+	 * @param action The action to run while the returned action is running
+	 * @param nextAction The next action
+	 * @return A LinkedAction that runs the passed action that will have nextAction as its next action.
+	 */
+	public static LinkedAction createLinkedAction(Action action, Action nextAction){
+		return new LinkedActionWrapper(action, nextAction);
+	}
+	
+	/**
+	 * Creates an {@link Action} that will update the passed action. When the action is done, if it is a {@link LinkedAction},
+	 * it will be replaced by the {@link Action} from {@link LinkedAction#getNextAction()}
+	 * @param action The action or linked action to update
+	 * @return An {@link Action} that will update the passed action. Cannot be recycled
+	 */
+	public static Action createLinkedActionRunner(Action action, WhenDone whenDone, boolean immediatelyDoNextWhenDone){
+		return new LinkedActionRunner(whenDone, immediatelyDoNextWhenDone, action);
+	}
+	// endregion
 
 
 	static abstract class Builder<T extends Builder> {
