@@ -92,6 +92,7 @@ class DefaultActionChooser extends SimpleAction implements ActionChooser {
 	private void endCurrent(){
 		if(activeAction != null){
 			activeAction.end();
+			activeAction = null;
 		}
 	}
 }

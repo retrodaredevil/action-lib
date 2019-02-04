@@ -52,3 +52,5 @@ time to end and change the active action. There is a factory method to create th
 * Parameters to be passed to super methods/constructors should be put before other parameters
 * Use tabs instead of spaces, 2 tabs for continued line indent. (Only for *.java files)
 * Reference interfaces instead of concrete classes in method signatures as much as possible
+### TODO
+* Create an Action that runs two actions. If the first action is done, the whole action becomes done
