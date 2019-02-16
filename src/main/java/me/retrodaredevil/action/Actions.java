@@ -144,6 +144,13 @@ public final class Actions {
 		return new OverrideEndAction(true, action);
 	}
 	// endregion
+	
+	public static LinkedAction createSupplementaryLinkedAction(LinkedAction linkedAction, Action supplementaryAction){
+		return new SupplementaryLinkedAction(linkedAction, supplementaryAction);
+	}
+	public static Action createSupplementaryAction(Action mainAction, Action supplementaryAction){
+		return new SupplementaryAction(mainAction, supplementaryAction);
+	}
 
 	static abstract class Builder<T extends Builder> {
 		protected boolean canBeDone = true, canRecycle = false;
