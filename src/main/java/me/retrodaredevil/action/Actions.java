@@ -3,6 +3,7 @@ package me.retrodaredevil.action;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Objects;
 
 public final class Actions {
 	private Actions(){ throw new UnsupportedOperationException(); }
@@ -46,6 +47,23 @@ public final class Actions {
 	public static Action createRunOnceRecyclableRunOnce(Runnable runnable){
 		return new RunOnceAction(runnable, RunOnceAction.RunType.RUN_ONCE);
 	}
+	public static Action createRunOnce(Action action){
+		Objects.requireNonNull(action);
+		return createRunOnce(createRunOnceRunnable(action));
+	}
+	public static Action createRunOnceRecyclable(Action action){
+		return createRunOnceRecyclable(createRunOnceRunnable(action));
+	}
+	public static Action createRunOnceRecyclableRunOnce(Action action){
+		return createRunOnceRecyclableRunOnce(createRunOnceRunnable(action));
+	}
+	private static Runnable createRunOnceRunnable(Action action){
+		Objects.requireNonNull(action);
+		return () -> {
+			action.update();
+			action.end();
+		};
+	}
 	// endregion
 
 	// region wait to start
@@ -65,12 +83,14 @@ public final class Actions {
 	}
 	// endregion
 
+	// region ActionChooser
 	public static ActionChooser createActionChooser(WhenDone whenDone){
 		return new DefaultActionChooser(false, whenDone);
 	}
 	public static ActionChooser createActionChooserRecyclable(WhenDone whenDone){
 		return new DefaultActionChooser(true, whenDone);
 	}
+	// endregion
 	
 	// region Linked Actions
 	
@@ -93,7 +113,37 @@ public final class Actions {
 		return new LinkedActionRunner(whenDone, immediatelyDoNextWhenDone, action);
 	}
 	// endregion
-
+	
+	// region Overrides
+	/**
+	 * NOTE: This is not necessary recyclable. For each method in {@link Action} it calls the corresponding action
+	 * on {@code action} (excluding {@link Action#isDone()}). This means that if {@code action} is recyclable, the returned {@link Action}
+	 * will also be recyclable
+	 * @param action The {@link Action} to use in the returned {@link Action}
+	 * @param isDone A boolean value that the returned {@link Action} will always return will {@link Action#isDone()} is called on the returned {@link Action}
+	 * @return An {@link Action} that calls the corresponding methods on {@code action} excluding {@link Action#isDone()} which returns {@code isDone}
+	 */
+	public static Action createIsDoneOverride(Action action, boolean isDone){
+		return new OverrideDoneAction(action, isDone);
+	}
+	
+	/**
+	 * This is not recyclable
+	 * @param action The Action to update when the returned Action is updated
+	 * @return An {@link Action} that calls each corresponding method on {@code action} excluding {@code action}'s {@link Action#end()} method.
+	 */
+	public static Action createEndOverride(Action action){
+		return new OverrideEndAction(false, action);
+	}
+	/**
+	 * This is recyclable
+	 * @param action The Action to update when the returned Action is updated
+	 * @return An {@link Action} that calls each corresponding method on {@code action} excluding {@code action}'s {@link Action#end()} method.
+	 */
+	public static Action createEndOverrideRecyclable(Action action){
+		return new OverrideEndAction(true, action);
+	}
+	// endregion
 
 	static abstract class Builder<T extends Builder> {
 		protected boolean canBeDone = true, canRecycle = false;

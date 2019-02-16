@@ -1,5 +1,7 @@
 package me.retrodaredevil.action;
 
+import java.util.Objects;
+
 class RunOnceAction extends SimpleAction {
 
 	private final Runnable runnable;
@@ -9,8 +11,8 @@ class RunOnceAction extends SimpleAction {
 
 	RunOnceAction(Runnable runnable, RunType type){
 		super(type != RunType.NON_RECYCLABLE);
-		this.runnable = runnable;
-		this.type = type;
+		this.runnable = Objects.requireNonNull(runnable);
+		this.type = Objects.requireNonNull(type);
 	}
 
 	@Override

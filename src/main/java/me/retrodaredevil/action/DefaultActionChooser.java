@@ -91,7 +91,11 @@ class DefaultActionChooser extends SimpleAction implements ActionChooser {
 
 	private void endCurrent(){
 		if(activeAction != null){
-			activeAction.end();
+			if(activeAction.isActive()) {
+				activeAction.end();
+			} else {
+				throw new IllegalStateException("The activeAction should be active! It's not! activeAction: " + activeAction);
+			}
 			activeAction = null;
 		}
 	}
