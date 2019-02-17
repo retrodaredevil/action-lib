@@ -151,6 +151,14 @@ public final class Actions {
 	public static Action createSupplementaryAction(Action mainAction, Action supplementaryAction){
 		return new SupplementaryAction(mainAction, supplementaryAction);
 	}
+	public static Action createDynamicActionRunner(DynamicActionCreator creator){
+		return new DynamicActionRunner(){
+			@Override
+			public Action createAction() {
+				return creator.createAction();
+			}
+		};
+	}
 
 	static abstract class Builder<T extends Builder> {
 		protected boolean canBeDone = true, canRecycle = false;
@@ -239,5 +247,8 @@ public final class Actions {
 	}
 	public interface CanStart {
 		boolean canStart();
+	}
+	public interface DynamicActionCreator {
+		Action createAction();
 	}
 }

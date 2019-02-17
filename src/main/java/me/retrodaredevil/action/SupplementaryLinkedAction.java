@@ -1,6 +1,6 @@
 package me.retrodaredevil.action;
 
-public class SupplementaryLinkedAction implements LinkedAction {
+class SupplementaryLinkedAction implements LinkedAction {
 	
 	private final LinkedAction linkedAction;
 	private final Action supplementaryAction;

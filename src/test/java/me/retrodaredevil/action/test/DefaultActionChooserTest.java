@@ -128,4 +128,10 @@ final class DefaultActionChooserTest {
 		actionChooser.update();
 		assertEquals(2, value[0]); // make sure it didn't run
 	}
+	@Test
+	void testEmptyActionChooser(){
+		final ActionChooser action = Actions.createActionChooser(WhenDone.BE_DONE);
+		action.update();
+		assertTrue(action.isDone());
+	}
 }
