@@ -1,5 +1,6 @@
 package me.retrodaredevil.action;
 
+import java.io.PrintWriter;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -113,6 +114,34 @@ public final class Actions {
 		return new LinkedActionRunner(whenDone, immediatelyDoNextWhenDone, action);
 	}
 	// endregion
+	
+	public static <T extends Throwable> Action createLogAndEndTryCatchAction(Action action, Class<T> throwableClass, PrintWriter out){
+		return createLogAndEndTryCatchAction(false, action, throwableClass, out);
+	}
+	public static <T extends Throwable> Action createLogAndEndTryCatchActionRecyclable(Action action, Class<T> throwableClass, PrintWriter out){
+		return createLogAndEndTryCatchAction(true, action, throwableClass, out);
+	}
+	
+	private static <T extends Throwable> Action createLogAndEndTryCatchAction(boolean canRecycle, Action action, Class<T> throwableClass, PrintWriter out){
+		return new TryCatchAction<T>(canRecycle, action, throwableClass) {
+			@Override
+			protected void onCatchUpdate(T throwable) {
+				throwable.printStackTrace(out);
+				setDone(true);
+			}
+			
+			@Override
+			protected void onCatchEnd(T throwable) {
+				throwable.printStackTrace(out);
+			}
+			
+			@Override
+			protected boolean onCatchIsDone(T throwable) {
+				throwable.printStackTrace(out);
+				return true;
+			}
+		};
+	}
 	
 	// region Overrides
 	/**
