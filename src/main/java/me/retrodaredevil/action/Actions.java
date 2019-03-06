@@ -1,10 +1,7 @@
 package me.retrodaredevil.action;
 
 import java.io.PrintWriter;
-import java.util.ArrayDeque;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Objects;
+import java.util.*;
 
 public final class Actions {
 	private Actions(){ throw new UnsupportedOperationException(); }
@@ -219,6 +216,7 @@ public final class Actions {
 	public static class ActionMultiplexerBuilder extends Builder<ActionMultiplexerBuilder>{
 		private final Action[] initialActions;
 		private boolean clearAllOnEnd = false;
+		private boolean updateInOrder = false;
 
 		public ActionMultiplexerBuilder(Action... initialActions){
 			this.initialActions = initialActions;
@@ -232,8 +230,18 @@ public final class Actions {
             clearAllOnEnd = b;
 			return getThis();
 		}
+		public ActionMultiplexerBuilder forceUpdateInOrder(boolean b){
+			updateInOrder = b;
+			return getThis();
+		}
 		public ActionMultiplexer build(){
-			return new SetActionMultiplexer(canRecycle, new HashSet<>(Arrays.asList(initialActions)), canBeDone, clearAllOnEnd);
+			final Set<Action> actions;
+			if(updateInOrder){
+				actions = new LinkedHashSet<>(Arrays.asList(initialActions));
+			} else {
+				actions = new HashSet<>(Arrays.asList(initialActions));
+			}
+			return new SetActionMultiplexer(canRecycle, actions, canBeDone, clearAllOnEnd);
 		}
 	}
 

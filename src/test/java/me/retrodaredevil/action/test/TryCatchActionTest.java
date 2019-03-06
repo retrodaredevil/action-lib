@@ -12,7 +12,7 @@ final class TryCatchActionTest {
 	@Test
 	void testTryCatchAction(){
 		final boolean[] ran = {false};
-		final Action action = new TryCatchAction<RuntimeException>(Actions.createRunOnce(() -> { throw new RuntimeException("my exception"); }), RuntimeException.class) {
+		final Action action = new TryCatchAction<RuntimeException>(false, Actions.createRunOnce(() -> { throw new RuntimeException("my exception"); }), RuntimeException.class) {
 			@Override
 			protected void onCatchUpdate(RuntimeException throwable) {
 				assertEquals("my exception", throwable.getMessage());

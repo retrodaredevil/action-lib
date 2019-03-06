@@ -89,4 +89,29 @@ final class SetActionMultiplexerTest {
         assertFalse(value[0]);
 
 	}
+	@Test
+	void testForceOrder(){
+		final int[] i = {0};
+		final int[] value = {0};
+		final ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder(
+				Actions.createRunOnce(() -> {
+					assertEquals(0, i[0]++);
+					value[0]++;
+				}),
+				Actions.createRunOnce(() -> {
+					assertEquals(1, i[0]++);
+					value[0]++;
+				}),
+				Actions.createRunOnce(() -> {
+					assertEquals(2, i[0]++);
+					value[0]++;
+				}),
+				Actions.createRunOnce(() -> {
+					assertEquals(3, i[0]++);
+					value[0]++;
+				})
+		).forceUpdateInOrder(true).build();
+		multiplexer.update();
+		assertEquals(4, value[0]);
+	}
 }
