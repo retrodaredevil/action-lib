@@ -15,6 +15,10 @@ public interface Action {
 	 * @throws IllegalStateException If this is not "recyclable" and {@link #end()} has already been called. This is optional to be thrown.
 	 */
 	void update();
+	
+	void pause();
+	
+	boolean isPaused();
 
 	/**
 	 * Ends the action

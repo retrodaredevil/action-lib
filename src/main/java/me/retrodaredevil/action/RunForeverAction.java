@@ -6,6 +6,7 @@ class RunForeverAction implements Action {
 	private final Runnable runnable;
 	private final boolean canRecycle;
 	private boolean running = false;
+	private boolean paused = false;
 	private boolean endedOnce = false;
 
 	RunForeverAction(boolean canRecycle, Runnable runnable){
@@ -18,10 +19,26 @@ class RunForeverAction implements Action {
 		if(endedOnce && !canRecycle){
 			throw new IllegalStateException("This is not recyclable! this: " + this);
 		}
+		if(paused){
+			paused = false;
+		}
 		running = true;
         runnable.run();
 	}
-
+	
+	@Override
+	public void pause() {
+		if(paused){
+			throw new IllegalStateException("Already paused!");
+		}
+		paused = true;
+	}
+	
+	@Override
+	public boolean isPaused() {
+		return paused;
+	}
+	
 	@Override
 	public void end() {
 		running = false;

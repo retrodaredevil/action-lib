@@ -11,9 +11,11 @@ package me.retrodaredevil.action;
 public class SimpleAction implements Action {
 
 	private final boolean canRecycle;
+	private final boolean canPause;
 
 	/** true when {@link #isActive()} is true, false when {@link #isActive()} is false*/
 	private boolean running = false;
+	private boolean paused = false;
 	/** Set to false when starting (before {@link #onStart()} is called*/
 	private boolean done = false;
 	/** Set to true when {@link #end()} is called. Should never be set back to false once true*/
@@ -23,13 +25,28 @@ public class SimpleAction implements Action {
 	 *
 	 * @param canRecycle Can {@link #update()} be called after being ended once via {@link #end()}
 	 */
-	protected SimpleAction(boolean canRecycle){
+	protected SimpleAction(boolean canRecycle, boolean canPause){
 		this.canRecycle = canRecycle;
+		this.canPause = canPause;
+	}
+	protected SimpleAction(boolean canRecycle){
+		this(canRecycle, true);
 	}
 
 
 	protected void onStart(){}
 	protected void onUpdate(){}
+	
+	protected void onPause(){
+		if(!canPause){
+			throw new IllegalStateException("This action cannot pause! So onPause() definitely should never be called!");
+		}
+	}
+	protected void onResume(){
+		if(!canPause){
+			throw new IllegalStateException("This action cannot pause! So onResume() definitely should never be called!");
+		}
+	}
 
 	/**
 	 * Called when being ended.
@@ -63,9 +80,25 @@ public class SimpleAction implements Action {
 			running = true;
 			onStart();
 		}
+		if(paused){
+			paused = false;
+			onResume();
+		}
 		onUpdate();
 	}
 
+	@Override
+	public final void pause() {
+		if(!running){
+			throw new IllegalStateException("You cannot pause an action that isn't active!");
+		}
+		if(!canPause){
+			throw new IllegalStateException("This action cannot be paused!");
+		}
+		paused = true;
+		onPause();
+	}
+	
 	@Override
 	public final void end() {
 		if(!running){
@@ -75,7 +108,12 @@ public class SimpleAction implements Action {
 		running = false;
 		oneWayEndedFlag = true;
 	}
-
+	
+	@Override
+	public boolean isPaused() {
+		return paused;
+	}
+	
 	@Override
 	public final boolean isDone() {
 		onIsDoneRequest();

@@ -22,6 +22,17 @@ class SupplementaryLinkedAction implements LinkedAction {
 	}
 	
 	@Override
+	public void pause() {
+		linkedAction.pause();
+		supplementaryAction.pause();
+	}
+	
+	@Override
+	public boolean isPaused() {
+		return linkedAction.isPaused();
+	}
+	
+	@Override
 	public void end() {
 		linkedAction.end();
 		supplementaryAction.end();

@@ -14,6 +14,17 @@ class SupplementaryAction implements Action {
 	}
 	
 	@Override
+	public void pause() {
+		mainAction.pause();
+		supplementaryAction.pause();
+	}
+	
+	@Override
+	public boolean isPaused() {
+		return mainAction.isPaused();
+	}
+	
+	@Override
 	public void end() {
 		mainAction.end();
 		supplementaryAction.end();

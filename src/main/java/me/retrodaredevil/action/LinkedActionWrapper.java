@@ -26,6 +26,16 @@ class LinkedActionWrapper implements LinkedAction {
 	}
 	
 	@Override
+	public void pause() {
+		action.pause();
+	}
+	
+	@Override
+	public boolean isPaused() {
+		return action.isPaused();
+	}
+	
+	@Override
 	public void end() {
 		action.end();
 	}
