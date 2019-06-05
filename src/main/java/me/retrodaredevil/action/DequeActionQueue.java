@@ -1,5 +1,7 @@
 package me.retrodaredevil.action;
 
+import me.retrodaredevil.action.event.EventListener;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
@@ -163,4 +165,16 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 			setDone(currentAction == null && actionQueue.isEmpty());
 		}
 	}
+	
+	@Override
+	public EventListener getEventListener() {
+		return eventListener;
+	}
+	private EventListener eventListener = (event, hasBeenHandled) -> {
+		final Action action = currentAction;
+		if(action != null){
+			return action.getEventListener().onEvent(event, hasBeenHandled);
+		}
+		return false;
+	};
 }

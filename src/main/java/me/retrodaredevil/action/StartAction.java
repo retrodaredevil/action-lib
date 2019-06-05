@@ -1,7 +1,10 @@
 package me.retrodaredevil.action;
 
+import me.retrodaredevil.action.event.EventListener;
+
 public abstract class StartAction extends SimpleAction {
 	private final Action action;
+	private final EventListener eventListener;
 	/** Used in place of {@link Action#isActive()} so we aren't relying on a method that we don't know
 	 * the implementation of*/
 	private boolean started = false;
@@ -16,6 +19,12 @@ public abstract class StartAction extends SimpleAction {
 	public StartAction(boolean canRecycle, Action action){
 		super(canRecycle);
 		this.action = action;
+		eventListener = (event, hasBeenHandled) -> {
+			if(action.isActive()){
+				return action.getEventListener().onEvent(event, hasBeenHandled);
+			}
+			return false;
+		};
 	}
 
 	protected abstract boolean shouldStart();
@@ -50,5 +59,10 @@ public abstract class StartAction extends SimpleAction {
 			action.end();
 			started = false;
 		}
+	}
+	
+	@Override
+	public EventListener getEventListener() {
+		return eventListener;
 	}
 }

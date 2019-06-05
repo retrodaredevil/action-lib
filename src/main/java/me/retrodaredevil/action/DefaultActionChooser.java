@@ -1,5 +1,7 @@
 package me.retrodaredevil.action;
 
+import me.retrodaredevil.action.event.EventListener;
+
 import java.util.Collection;
 import java.util.Collections;
 
@@ -99,4 +101,16 @@ class DefaultActionChooser extends SimpleAction implements ActionChooser {
 			activeAction = null;
 		}
 	}
+	
+	@Override
+	public EventListener getEventListener() {
+		return eventListener;
+	}
+	private EventListener eventListener = (event, hasBeenHandled) -> {
+		final Action action = activeAction;
+		if(action != null){
+			return action.getEventListener().onEvent(event, hasBeenHandled);
+		}
+		return false;
+	};
 }

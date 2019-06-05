@@ -1,5 +1,7 @@
 package me.retrodaredevil.action;
 
+import me.retrodaredevil.action.event.EventListener;
+
 import java.util.Collection;
 import java.util.Collections;
 
@@ -9,11 +11,21 @@ class LinkedActionRunner extends SimpleAction implements SingleActiveActionHolde
 	private final WhenDone whenDone;
 	private final boolean immediatelyDoNextWhenDone;
 	
+	private final EventListener eventListener;
+	
 	public LinkedActionRunner(WhenDone whenDone, boolean immediatelyDoNextWhenDone, Action action) {
 		super(false);
 		this.action = action;
 		this.whenDone = whenDone;
 		this.immediatelyDoNextWhenDone = immediatelyDoNextWhenDone;
+		
+		eventListener = (event, hasBeenHandled) -> {
+			final Action thisAction = this.action;
+			if(thisAction != null){
+				return thisAction.getEventListener().onEvent(event, hasBeenHandled);
+			}
+			return false;
+		};
 	}
 	
 	@Override
@@ -28,6 +40,11 @@ class LinkedActionRunner extends SimpleAction implements SingleActiveActionHolde
         	return Collections.emptySet();
 		}
         return Collections.singleton(action);
+	}
+	
+	@Override
+	public EventListener getEventListener() {
+		return eventListener;
 	}
 	
 	@Override

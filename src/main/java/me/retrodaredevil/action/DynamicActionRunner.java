@@ -1,5 +1,7 @@
 package me.retrodaredevil.action;
 
+import me.retrodaredevil.action.event.EventListener;
+
 abstract class DynamicActionRunner extends SimpleAction {
 	private final ActionChooser actionChooser;
 	
@@ -31,5 +33,10 @@ abstract class DynamicActionRunner extends SimpleAction {
 	protected void onIsDoneRequest() {
 		super.onIsDoneRequest();
 		setDone(actionChooser.isDone());
+	}
+	
+	@Override
+	public EventListener getEventListener() {
+		return actionChooser.getEventListener();
 	}
 }

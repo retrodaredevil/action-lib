@@ -1,5 +1,7 @@
 package me.retrodaredevil.action;
 
+import me.retrodaredevil.action.event.EventListener;
+
 /**
  * Represents something that can be updated and ended after updating. It's {@link #isDone()} method
  * tells you if it wishes to end (not required). It's {@link #isActive()} tells you if it is actively updating.
@@ -38,4 +40,13 @@ public interface Action {
 
 	/** @return true if this is currently active, false otherwise.*/
 	boolean isActive();
+	
+	/**
+	 * NOTE: The returned value should never be changed throughout the lifecycle of this object. This means that implementations
+	 * should always return the same value.
+	 * @return A non-null {@link EventListener} representing this action's event listener
+	 */
+	default EventListener getEventListener(){
+		return EventListener.Defaults.DO_NOTHING;
+	}
 }

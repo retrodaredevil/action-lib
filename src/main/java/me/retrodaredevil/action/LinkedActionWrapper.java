@@ -1,5 +1,7 @@
 package me.retrodaredevil.action;
 
+import me.retrodaredevil.action.event.EventListener;
+
 import java.util.Objects;
 
 class LinkedActionWrapper implements LinkedAction {
@@ -38,5 +40,10 @@ class LinkedActionWrapper implements LinkedAction {
 	@Override
 	public boolean isActive() {
         return action.isActive();
+	}
+	
+	@Override
+	public EventListener getEventListener() {
+		return action.getEventListener();
 	}
 }

@@ -1,6 +1,6 @@
 package me.retrodaredevil.action;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 class RunForeverAction implements Action {
 	private final Runnable runnable;
@@ -9,7 +9,7 @@ class RunForeverAction implements Action {
 	private boolean endedOnce = false;
 
 	RunForeverAction(boolean canRecycle, Runnable runnable){
-		this.runnable = Objects.requireNonNull(runnable);
+		this.runnable = requireNonNull(runnable);
 		this.canRecycle = canRecycle;
 	}
 

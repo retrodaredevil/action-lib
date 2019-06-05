@@ -1,6 +1,8 @@
 package me.retrodaredevil.action;
 
 
+import me.retrodaredevil.action.event.EventListener;
+
 import java.util.Objects;
 
 /**
@@ -80,5 +82,10 @@ public abstract class TryCatchAction<T extends Throwable> extends SimpleAction {
 			}
 		}
 		setDone(done);
+	}
+	
+	@Override
+	public EventListener getEventListener() {
+		return action.getEventListener();
 	}
 }

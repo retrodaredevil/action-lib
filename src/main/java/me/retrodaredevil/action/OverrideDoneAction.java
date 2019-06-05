@@ -1,5 +1,7 @@
 package me.retrodaredevil.action;
 
+import me.retrodaredevil.action.event.EventListener;
+
 class OverrideDoneAction implements Action {
 	private final Action action;
 	private final boolean isDone;
@@ -27,5 +29,10 @@ class OverrideDoneAction implements Action {
 	@Override
 	public boolean isActive() {
 		return action.isActive();
+	}
+	
+	@Override
+	public EventListener getEventListener() {
+		return action.getEventListener();
 	}
 }
