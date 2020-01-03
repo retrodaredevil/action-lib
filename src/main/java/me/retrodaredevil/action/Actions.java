@@ -216,7 +216,6 @@ public final class Actions {
 	public static class ActionMultiplexerBuilder extends Builder<ActionMultiplexerBuilder>{
 		private final Action[] initialActions;
 		private boolean clearAllOnEnd = false;
-		private boolean updateInOrder = false;
 
 		public ActionMultiplexerBuilder(Action... initialActions){
 			this.initialActions = initialActions;
@@ -230,17 +229,8 @@ public final class Actions {
             clearAllOnEnd = b;
 			return getThis();
 		}
-		public ActionMultiplexerBuilder forceUpdateInOrder(boolean b){
-			updateInOrder = b;
-			return getThis();
-		}
 		public ActionMultiplexer build(){
-			final Set<Action> actions;
-			if(updateInOrder){
-				actions = new LinkedHashSet<>(Arrays.asList(initialActions));
-			} else {
-				actions = new HashSet<>(Arrays.asList(initialActions));
-			}
+			final Set<Action> actions = new LinkedHashSet<>(Arrays.asList(initialActions));
 			return new SetActionMultiplexer(canRecycle, actions, canBeDone, clearAllOnEnd);
 		}
 	}

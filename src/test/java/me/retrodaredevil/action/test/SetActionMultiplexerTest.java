@@ -90,7 +90,7 @@ final class SetActionMultiplexerTest {
 
 	}
 	@Test
-	void testForceOrder(){
+	void testOrder(){
 		final int[] i = {0};
 		final int[] value = {0};
 		final ActionMultiplexer multiplexer = new Actions.ActionMultiplexerBuilder(
@@ -110,7 +110,7 @@ final class SetActionMultiplexerTest {
 					assertEquals(3, i[0]++);
 					value[0]++;
 				})
-		).forceUpdateInOrder(true).build();
+		).build();
 		multiplexer.update();
 		assertEquals(4, value[0]);
 	}
