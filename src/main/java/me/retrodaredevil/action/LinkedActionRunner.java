@@ -56,6 +56,7 @@ class LinkedActionRunner extends SimpleAction implements SingleActiveActionHolde
 					action = nextAction;
 					if(immediatelyDoNextWhenDone){
 						updateAction();
+						return;
 					}
 				}
 			}

@@ -3,6 +3,8 @@ package me.retrodaredevil.action;
 import java.io.PrintWriter;
 import java.util.*;
 
+import static java.util.Objects.requireNonNull;
+
 public final class Actions {
 	private Actions(){ throw new UnsupportedOperationException(); }
 
@@ -46,7 +48,7 @@ public final class Actions {
 		return new RunOnceAction(runnable, RunOnceAction.RunType.RUN_ONCE);
 	}
 	public static Action createRunOnce(Action action){
-		Objects.requireNonNull(action);
+		requireNonNull(action);
 		return createRunOnce(createRunOnceRunnable(action));
 	}
 	public static Action createRunOnceRecyclable(Action action){
@@ -56,7 +58,7 @@ public final class Actions {
 		return createRunOnceRecyclableRunOnce(createRunOnceRunnable(action));
 	}
 	private static Runnable createRunOnceRunnable(Action action){
-		Objects.requireNonNull(action);
+		requireNonNull(action);
 		return () -> {
 			action.update();
 			action.end();
