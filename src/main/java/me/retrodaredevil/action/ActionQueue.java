@@ -17,6 +17,8 @@ public interface ActionQueue extends SingleActiveActionHolder, ActionCollection 
 
 	/**
 	 * Ends the current action if there is one and removes it. This happens immediately.
+	 * <p>
+     * Note: This is not thread safe
 	 * @return true if there was a current action to end, false otherwise
 	 */
 	boolean removeCurrentAction();
@@ -24,6 +26,8 @@ public interface ActionQueue extends SingleActiveActionHolder, ActionCollection 
      * Ends the current action and moves it to the end of the queue if there is one. This happens immediately.
 	 * <p>
 	 * NOTE: This requires the current action to be recyclable
+	 * <p>
+	 * Note: This is not thread safe
 	 * @param doNothingIfEmpty true if you want to do nothing if the queue is empty, false otherwise.
 	 *                         If set to true, the current action will not be ended (nothing will happen).
 	 */
@@ -36,6 +40,8 @@ public interface ActionQueue extends SingleActiveActionHolder, ActionCollection 
 	 * will allow you to stop the current running action and put another one in.
 	 * <p>
 	 * NOTE: This requires the current action to be recyclable
+	 * <p>
+	 * Note: This is not thread safe
 	 * @return true if there was a current action to put at the front of the queue, false otherwise
 	 */
 	boolean moveCurrentToNext();

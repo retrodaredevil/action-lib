@@ -40,11 +40,14 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 
 	@Override
 	public Action getActiveAction() {
-        return currentAction;
+		synchronized (this) {
+			return currentAction;
+		}
 	}
 
 	@Override
 	public Collection<? extends Action> getActiveActions() {
+		Action currentAction = getActiveAction();
 		if(currentAction == null){
 			return Collections.emptySet();
 		}
@@ -57,18 +60,24 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 		if(action == this){
 			throw new IllegalArgumentException();
 		}
-		actionQueue.addLast(action);
+		synchronized (this) {
+			actionQueue.addLast(action);
+		}
 		return true;
 	}
 
 	@Override
 	public boolean removeQueued(Action action) {
-        return actionQueue.remove(action);
+		synchronized (this) {
+			return actionQueue.remove(action);
+		}
 	}
 
 	@Override
 	public void clear() {
-		actionQueue.clear();
+		synchronized (this) {
+			actionQueue.clear();
+		}
 	}
 
 	/**
@@ -82,7 +91,9 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 		if(action.isActive()){
 			throw new IllegalArgumentException("action cannot be active when you add it!");
 		}
-		actionQueue.addFirst(action);
+		synchronized (this) {
+			actionQueue.addFirst(action);
+		}
 		return true;
 	}
 
@@ -102,11 +113,16 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 
 	@Override
 	public boolean moveCurrentToEnd(boolean doNothingIfEmpty){
-		if((doNothingIfEmpty && actionQueue.isEmpty()) || currentAction == null)
-			return false;
+		synchronized (this) {
+			if ((doNothingIfEmpty && actionQueue.isEmpty()) || currentAction == null) {
+				return false;
+			}
+		}
 
 		currentAction.end();
-		actionQueue.addLast(currentAction);
+		synchronized (this) {
+			actionQueue.addLast(currentAction);
+		}
 		currentAction = null;
 		return true;
 	}
@@ -116,7 +132,9 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 			return false;
 
 		currentAction.end();
-		actionQueue.addFirst(currentAction);
+		synchronized (this) {
+			actionQueue.addFirst(currentAction);
+		}
 		currentAction = null;
 		return true;
 	}
@@ -128,7 +146,9 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 	}
 	private void updateAction(){
 		if(currentAction == null){
-			currentAction = actionQueue.poll();
+			synchronized (this) {
+				currentAction = actionQueue.poll();
+			}
 		}
 		if(currentAction != null){
 			currentAction.update();
@@ -154,14 +174,18 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 		}
 		if(clearQueuedOnEnd){
 			currentAction = null;
-			actionQueue.clear();
+			synchronized (this) {
+				actionQueue.clear();
+			}
 		}
 	}
 
 	@Override
 	protected void onIsDoneRequest() {
 		if (canBeDone) {
-			setDone(currentAction == null && actionQueue.isEmpty());
+			synchronized (this) {
+				setDone(currentAction == null && actionQueue.isEmpty());
+			}
 		}
 	}
 }
