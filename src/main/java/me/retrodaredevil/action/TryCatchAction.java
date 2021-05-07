@@ -37,6 +37,7 @@ public abstract class TryCatchAction<T extends Throwable> extends SimpleAction {
 	 */
 	protected abstract boolean onCatchIsDone(T throwable);
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onUpdate() {
 		super.onUpdate();
@@ -52,6 +53,7 @@ public abstract class TryCatchAction<T extends Throwable> extends SimpleAction {
 	}
 	
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onEnd(boolean peacefullyEnded) {
 		try{
@@ -65,6 +67,7 @@ public abstract class TryCatchAction<T extends Throwable> extends SimpleAction {
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	@Override
 	protected void onIsDoneRequest() {
 		super.onIsDoneRequest();

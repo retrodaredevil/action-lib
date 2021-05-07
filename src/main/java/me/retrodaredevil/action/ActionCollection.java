@@ -17,6 +17,9 @@ public interface ActionCollection extends ActiveActionHolder {
 
 	/**
 	 * Clears all the actions and ends them if they were active
+	 * <p>
+     * Note: This is thread safe, but behavior is undefined for {@link #add(Action)} if another thread tries adding an {@link Action} present
+	 * in {@link #getActiveActions()} before this call is completed
 	 */
     void clear();
 }

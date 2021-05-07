@@ -13,9 +13,9 @@ public class SimpleAction implements Action {
 	private final boolean canRecycle;
 
 	/** true when {@link #isActive()} is true, false when {@link #isActive()} is false*/
-	private boolean running = false;
+	private volatile boolean running = false;
 	/** Set to false when starting (before {@link #onStart()} is called*/
-	private boolean done = false;
+	private volatile boolean done = false;
 	/** Set to true when {@link #end()} is called. Should never be set back to false once true*/
 	private boolean oneWayEndedFlag = false;
 
@@ -78,7 +78,9 @@ public class SimpleAction implements Action {
 
 	@Override
 	public final boolean isDone() {
-		onIsDoneRequest();
+		synchronized (this) {
+			onIsDoneRequest();
+		}
         return getCurrentIsDone();
 	}
 

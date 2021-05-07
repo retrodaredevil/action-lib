@@ -20,27 +20,27 @@ class DefaultActionChooser extends SimpleAction implements ActionChooser {
 
 
 	@Override
-	public void setNextAction(Action action) {
+	public synchronized void setNextAction(Action action) {
         this.nextAction = action;
 	}
 	@Override
-	public Action getNextAction() {
+	public synchronized Action getNextAction() {
 		return nextAction;
 	}
 
 	@Override
 	public void setToClearAction() { setToClearAction(true); }
 	@Override
-	public void setToClearAction(boolean b) {
+	public synchronized void setToClearAction(boolean b) {
 		clearActive = b;
 	}
 	@Override
-	public boolean isSetToClearAction() {
+	public synchronized boolean isSetToClearAction() {
         return clearActive;
 	}
 
 	@Override
-	public Action getActiveAction() {
+	public synchronized Action getActiveAction() {
         return activeAction;
 	}
 
@@ -56,11 +56,13 @@ class DefaultActionChooser extends SimpleAction implements ActionChooser {
 	@Override
 	protected void onUpdate() {
 		super.onUpdate();
-		if(nextAction != null || clearActive){
-			endCurrent();
-			activeAction = nextAction;
-			nextAction = null;
-			clearActive = false;
+		synchronized (this) {
+			if (nextAction != null || clearActive) {
+				endCurrent();
+				activeAction = nextAction;
+				nextAction = null;
+				clearActive = false;
+			}
 		}
         boolean done = false;
 		if(activeAction != null){

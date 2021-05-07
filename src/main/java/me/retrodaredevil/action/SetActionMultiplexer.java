@@ -1,10 +1,6 @@
 package me.retrodaredevil.action;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * NOTE that the order that the actions are updated in depend on the implementation of the {@link Set} passed to the constructor
@@ -44,15 +40,21 @@ public class SetActionMultiplexer extends SimpleAction implements ActionMultiple
 		if(action == this){
 			throw new IllegalArgumentException();
 		}
-		if(action.isActive() && !actionSet.contains(action)){
-			throw new IllegalArgumentException("You cannot add an action that is already active! Something else is handling it!");
+		synchronized (this) {
+			if (action.isActive() && !actionSet.contains(action)) {
+				throw new IllegalArgumentException("You cannot add an action that is already active! Something else is handling it!");
+			}
+			return actionSet.add(action);
 		}
-		return actionSet.add(action);
 	}
 
 	@Override
 	public boolean remove(Action action) {
-        if(actionSet.remove(action)){
+		final boolean removed;
+		synchronized (this) {
+			removed = actionSet.remove(action);
+		}
+        if(removed){
         	if(action.isActive()){ // may not be active because this may not have been updated yet
         		action.end();
 			}
@@ -63,12 +65,16 @@ public class SetActionMultiplexer extends SimpleAction implements ActionMultiple
 
 	@Override
 	public void clear() {
-		for(Action action : actionSet){
+		final List<Action> actions;
+		synchronized (this) {
+			actions = new ArrayList<>(actionSet);
+			actionSet.clear();
+		}
+		for(Action action : actions){
 			if(action.isActive()) {
 				action.end();
 			}
 		}
-		actionSet.clear();
 	}
 
 	@Override

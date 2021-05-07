@@ -26,7 +26,7 @@ class RunOnceAction extends SimpleAction {
 		ranOnce = true;
 	}
 	protected enum RunType {
-		/** Despite the name, this is just used so if this isn't removed, it will still call it multiple times but still wants to "be done" after it starts*/
+		/** Despite the name "RunOnceAction", this is just used so if this isn't removed, it will still call it multiple times but still wants to "be done" after it starts*/
 		RUN_EVERY_START,
 		/** If started multiple times, will throw an error*/
 		NON_RECYCLABLE,

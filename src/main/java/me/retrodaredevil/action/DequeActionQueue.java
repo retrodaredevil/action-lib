@@ -90,6 +90,7 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 	 * Ends the current action running if there is one
 	 * @return true if the current action was ended, false if there is no current action
 	 */
+	@Override
 	public boolean removeCurrentAction(){
 		if(currentAction != null){
 			currentAction.end();

@@ -17,13 +17,13 @@ class LinkedActionRunner extends SimpleAction implements SingleActiveActionHolde
 	}
 	
 	@Override
-	public Action getActiveAction() {
+	public synchronized Action getActiveAction() {
         return action;
 	}
 	
 	@Override
 	public Collection<? extends Action> getActiveActions() {
-		final Action action = this.action;
+		final Action action = getActiveAction();
         if(action == null){
         	return Collections.emptySet();
 		}
@@ -53,7 +53,9 @@ class LinkedActionRunner extends SimpleAction implements SingleActiveActionHolde
 					done = true;
 				} else {
 					action.end();
-					action = nextAction;
+					synchronized (this) {
+						action = nextAction;
+					}
 					if(immediatelyDoNextWhenDone){
 						updateAction();
 						return;

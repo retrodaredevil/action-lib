@@ -5,7 +5,7 @@ import java.util.Objects;
 class RunForeverAction implements Action {
 	private final Runnable runnable;
 	private final boolean canRecycle;
-	private boolean running = false;
+	private volatile boolean running = false;
 	private boolean endedOnce = false;
 
 	RunForeverAction(boolean canRecycle, Runnable runnable){

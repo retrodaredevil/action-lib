@@ -6,6 +6,10 @@ package me.retrodaredevil.action;
  * <p>
  * An Action is actively updating if {@link #update()} has been called after the last call to {@link #end()} or
  * {@link #end()} hasn't been called at all and {@link #update()} has been called at least once.
+ * <p>
+ * Note that methods that call {@link #update()} or {@link #end()} are not thread safe, however methods to query the state
+ * of an action are thread safe and most of the time methods that set an action to eventually add or remove an action are
+ * thread safe.
  */
 public interface Action {
 	/**
