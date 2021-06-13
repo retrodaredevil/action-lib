@@ -87,13 +87,18 @@ public class SetActionMultiplexer extends SimpleAction implements ActionMultiple
 	@Override
 	protected void onUpdate() {
 		super.onUpdate();
-		for (Iterator<Action> iterator = actionSet.iterator(); iterator.hasNext(); ) {
-			Action action = iterator.next();
+		final List<Action> actions;
+		synchronized (this) {
+			actions = new ArrayList<>(actionSet);
+		}
+		for (Action action : actions) {
 			action.update();
-			if(action.isDone()){
+			if (action.isDone()) {
 				action.end();
-				iterator.remove();
-			} else if(!action.isActive()){
+				synchronized (this) {
+					actionSet.remove(action);
+				}
+			} else if (!action.isActive()) {
 				throw new IllegalStateException(action + " is not active when it should be!");
 			}
 		}
