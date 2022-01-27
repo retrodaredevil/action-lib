@@ -17,7 +17,7 @@ public class DequeActionQueue extends BaseAction implements ActionQueue {
 	private final boolean immediatelyDoNextWhenDone;
 	private final Deque<Action> actionQueue;
 	/** The current action where if this isn't null, {@link Action#isActive()} should always be true*/
-	private Action currentAction = null;
+	private volatile Action currentAction = null; // Make volatile so that isDone() access has the most up-to-date value of this. Many times when we set this to null, we do not synchronize
 
 	/**
 	 * NOTE: It is recommended to use {@link Actions.ActionQueueBuilder} instead of creating this directly
@@ -182,11 +182,16 @@ public class DequeActionQueue extends BaseAction implements ActionQueue {
 
 	@Override
 	public boolean isDone() {
-		if (!canBeDone || currentAction != null) {
+		if (!canBeDone) {
 			return false;
 		}
+		/*
+		Note that we don't synchronize on currentAction throughout this class, and we don't always make sure that it is in the same synchronized
+		block as we do when we update actionQueue. This is OK as calls to isDone() from a separate thread may receive a value of false
+		while data is being updated in the main thread. As long as we design this class to make sure it is never the other way around, this is OK.
+		 */
 		synchronized (this) {
-			return actionQueue.isEmpty();
+			return currentAction == null && actionQueue.isEmpty();
 		}
 	}
 }
