@@ -1,6 +1,6 @@
 package me.retrodaredevil.action;
 
-abstract class DynamicActionRunner extends SimpleAction {
+abstract class DynamicActionRunner extends BaseAction {
 	private final ActionChooser actionChooser;
 	
 	public DynamicActionRunner() {
@@ -22,14 +22,13 @@ abstract class DynamicActionRunner extends SimpleAction {
 	}
 	
 	@Override
-	protected void onEnd(boolean peacefullyEnded) {
-		super.onEnd(peacefullyEnded);
+	protected void onEnd() {
+		super.onEnd();
 		actionChooser.end();
 	}
-	
+
 	@Override
-	protected void onIsDoneRequest() {
-		super.onIsDoneRequest();
-		setDone(actionChooser.isDone());
+	public boolean isDone() {
+		return actionChooser.isDone();
 	}
 }

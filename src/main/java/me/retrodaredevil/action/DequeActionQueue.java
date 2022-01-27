@@ -10,7 +10,7 @@ import java.util.Objects;
  * Depending on how an instance of this class was initialized, its {@link #isDone()} may or may not
  * return true when all the actions are done.
  */
-public class DequeActionQueue extends SimpleAction implements ActionQueue {
+public class DequeActionQueue extends BaseAction implements ActionQueue {
 	private final boolean canBeDone;
 	private final boolean clearActiveOnEnd;
 	private final boolean clearQueuedOnEnd;
@@ -164,8 +164,8 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 	}
 
 	@Override
-	protected void onEnd(boolean peacefullyEnded) {
-		super.onEnd(peacefullyEnded);
+	protected void onEnd() {
+		super.onEnd();
 		if(currentAction != null){
 			currentAction.end();
 			if(clearActiveOnEnd){
@@ -181,11 +181,12 @@ public class DequeActionQueue extends SimpleAction implements ActionQueue {
 	}
 
 	@Override
-	protected void onIsDoneRequest() {
-		if (canBeDone) {
-			synchronized (this) {
-				setDone(currentAction == null && actionQueue.isEmpty());
-			}
+	public boolean isDone() {
+		if (!canBeDone || currentAction != null) {
+			return false;
+		}
+		synchronized (this) {
+			return actionQueue.isEmpty();
 		}
 	}
 }

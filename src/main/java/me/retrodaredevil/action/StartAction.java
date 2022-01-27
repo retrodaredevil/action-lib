@@ -1,6 +1,6 @@
 package me.retrodaredevil.action;
 
-public abstract class StartAction extends SimpleAction {
+public abstract class StartAction extends BaseAction {
 	private final Action action;
 	/** Used in place of {@link Action#isActive()} so we aren't relying on a method that we don't know
 	 * the implementation of*/
@@ -39,13 +39,13 @@ public abstract class StartAction extends SimpleAction {
 	}
 
 	@Override
-	protected void onIsDoneRequest() {
-		setDone(action.isDone());
+	public boolean isDone() {
+		return action.isDone();
 	}
 
 	@Override
-	protected void onEnd(boolean peacefullyEnded) {
-		super.onEnd(peacefullyEnded);
+	protected void onEnd() {
+		super.onEnd();
 		if(started) {
 			action.end();
 			started = false;

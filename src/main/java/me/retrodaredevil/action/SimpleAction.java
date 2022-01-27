@@ -8,28 +8,18 @@ package me.retrodaredevil.action;
  * <p>
  * NOTE: When implementing, {@link #getCurrentIsDone()} is reset back to false whenever the action is started (before {@link #onStart()} is called)
  */
-public class SimpleAction implements Action {
+public class SimpleAction extends BaseAction {
 
-	private final boolean canRecycle;
-
-	/** true when {@link #isActive()} is true, false when {@link #isActive()} is false*/
-	private volatile boolean running = false;
 	/** Set to false when starting (before {@link #onStart()} is called*/
 	private volatile boolean done = false;
-	/** Set to true when {@link #end()} is called. Should never be set back to false once true*/
-	private boolean oneWayEndedFlag = false;
 
 	/**
 	 *
 	 * @param canRecycle Can {@link #update()} be called after being ended once via {@link #end()}
 	 */
 	protected SimpleAction(boolean canRecycle){
-		this.canRecycle = canRecycle;
+		super(canRecycle);
 	}
-
-
-	protected void onStart(){}
-	protected void onUpdate(){}
 
 	/**
 	 * Called when being ended.
@@ -39,7 +29,11 @@ public class SimpleAction implements Action {
 	 */
 	protected void onEnd(boolean peacefullyEnded){}
 	/** Called when {@link #isDone()} is being called. If you want to, you may call {@link #setDone(boolean)}
-	 * to alter the return value of that function.*/
+	 * to alter the return value of that function.
+	 * <p>
+	 * Note: If you have to override this method, consider using {@link BaseAction} instead of {@link SimpleAction}
+	 * <p>
+	 * Note: Unlike some of the other on* methods, this may be called in a separate thread. You must synchronize yourself if needed. Note {@link #setDone(boolean)} is always thread safe*/
 	protected void onIsDoneRequest(){}
 
 	protected final void setDone(boolean done){
@@ -53,39 +47,26 @@ public class SimpleAction implements Action {
 		return done;
 	}
 
-	@Override
-	public final void update() {
-		if(!running){
-			if(oneWayEndedFlag && !canRecycle){
-				throw new IllegalStateException("This action cannot be recycled!");
-			}
-			done = false;
-			running = true;
-			onStart();
-		}
-		onUpdate();
-	}
-
-	@Override
-	public final void end() {
-		if(!running){
-			throw new IllegalStateException("This action must be active to be able to end it!");
-		}
-		onEnd(getCurrentIsDone());
-		running = false;
-		oneWayEndedFlag = true;
-	}
 
 	@Override
 	public final boolean isDone() {
-		synchronized (this) {
-			onIsDoneRequest();
-		}
+		onIsDoneRequest();
         return getCurrentIsDone();
 	}
 
 	@Override
-	public final boolean isActive() {
-        return running;
+	protected void onStart() {
+		super.onStart();
+		done = false;
+	}
+
+	@Override
+	protected final void onEnd() {
+		super.onEnd();
+		onEnd(getCurrentIsDone());
+
+		// Ideally, we would just set this in onStart() (like we do), but if someone forgets to call super.onStart(), that would be problematic.
+		//   So, we'll just set it to false twice. No harm in that. Plus, after end() is called queries to isDone() are undefined because isActive() == false
+		done = false;
 	}
 }

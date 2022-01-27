@@ -5,7 +5,7 @@ import java.util.*;
 /**
  * NOTE that the order that the actions are updated in depend on the implementation of the {@link Set} passed to the constructor
  */
-public class SetActionMultiplexer extends SimpleAction implements ActionMultiplexer {
+public class SetActionMultiplexer extends BaseAction implements ActionMultiplexer {
 
 	private final Set<Action> actionSet;
 	/** Will always have the same elements as {@link #actionSet}, it's just unmodifiable*/
@@ -78,9 +78,12 @@ public class SetActionMultiplexer extends SimpleAction implements ActionMultiple
 	}
 
 	@Override
-	protected void onIsDoneRequest() {
-		if(canBeDone){
-			setDone(actionSet.isEmpty()); // done if actionSet is empty
+	public boolean isDone() {
+		if (!canBeDone) {
+			return false;
+		}
+		synchronized (this) {
+			return actionSet.isEmpty();
 		}
 	}
 
@@ -105,8 +108,8 @@ public class SetActionMultiplexer extends SimpleAction implements ActionMultiple
 	}
 
 	@Override
-	protected void onEnd(boolean peacefullyEnded) {
-		super.onEnd(peacefullyEnded);
+	protected void onEnd() {
+		super.onEnd();
 		if(clearOnEnd) {
 			clear();
 		} else {
